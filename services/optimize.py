@@ -51,6 +51,22 @@ except Exception as e:
 class PromptOptimizer:
     def __init__(self):
         self.stop_words = set(stopwords.words('english'))
+        self.custom_stop_words = {'english': {
+            'a', 'an', 'and', 'are', 'as', 'at', 'be', 'been', 'by', 'for',
+            'from', 'has', 'he', 'in', 'is', 'it', 'its', 'of', 'on', 'that',
+            'the', 'to', 'was', 'will', 'with', 'would', 'could', 'should',
+            'this', 'these', 'those', 'them', 'they', 'we', 'you', 'your',
+            'our', 'his', 'her', 'their', 'am', 'can', 'do', 'does', 'did',
+            'have', 'had', 'having', 'being', 'where', 'when', 'what', 'who',
+            'why', 'how', 'which', 'than', 'too', 'very', 'just', 'now',
+            'then', 'here', 'there', 'up', 'down', 'out', 'off', 'over',
+            'under', 'again', 'further', 'once', 'more', 'most', 'other',
+            'some', 'such', 'only', 'own', 'same', 'so', 'than', 'too',
+            'very', 'about', 'after', 'all', 'also', 'any', 'because',
+            'before', 'both', 'but', 'each', 'few', 'if', 'into', 'no',
+            'nor', 'not', 'or', 'same', 'some', 'such', 'through', 'until',
+            'while', 'above', 'below', 'between', 'during', 'since'
+        }}
         self.lemmatizer = WordNetLemmatizer()
 
         # Important POS tags to keep for prompt optimization
