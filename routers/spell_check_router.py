@@ -7,7 +7,7 @@ spellcheck = APIRouter(tags=["Spell Check"])
 
 @spellcheck.post("/spell-check")
 async def spell_check(text: str):
-    result = await spellCheck.check_spelling(text)
+    result = await spellCheck.find_misspelled_words(text)
     if result is None:
         raise HTTPException(
             status_code=500, detail="Spell check service failed")

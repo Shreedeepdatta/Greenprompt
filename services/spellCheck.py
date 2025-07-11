@@ -38,6 +38,3 @@ def find_misspelled_words(sentence):
             print("No suggestions available")
         print("-" * 40)
 
-
-# Example usage
-find_misspelled_words("i Luve dugs")
