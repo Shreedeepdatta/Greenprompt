@@ -71,26 +71,10 @@ def spell_check_api(sentence):
             "message": f"An error occurred: {str(e)}",
             "data": None
         }
-    
 
-# {
-#   "status": "success",
-#   "message": "Found 1 misspelled word(s)",
-#   "data": {
-#     "originalSentence": "i Love dugs",
-#     "totalWords": 3,
-#     "misspelledCount": 1,
-#     "misspelledWords": [
-#       {
-#         "misspelledWord": "dugs",
-#         "suggestions": ["dogs", "digs", "bugs", "hugs", "pugs"]
-#       }
-#     ]
-#   }
-# }
-
-# {
-#   "status": "error",
-#   "message": "Invalid input: sentence must be a non-empty string",
-#   "data": null
-# }
+# Add this new function that matches what your router is trying to call
+def find_misspelled_words(text):
+    """
+    Wrapper function to match the router's expectation
+    """
+    return spell_check_api(text)
