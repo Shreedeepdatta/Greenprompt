@@ -5,6 +5,7 @@ from nltk.tag import pos_tag
 from nltk.stem import WordNetLemmatizer
 from collections import defaultdict
 import re
+from dto.optimize_prompt_dto import PromptRequest, PromptResponse
 
 # Download required NLTK data (run once)
 
@@ -519,7 +520,7 @@ class PromptOptimizer:
 
         return ' '.join(optimized_tokens)
 
-    def analyze_prompt(self, prompt):
+    def analyze_prompt(self, prompt: PromptRequest):
         """Comprehensive analysis of the prompt"""
         print(f"Original prompt: {prompt}")
         print(f"Length: {len(prompt)} characters, {len(prompt.split())} words")
@@ -573,53 +574,56 @@ class PromptOptimizer:
         print(
             f"  Length: {len(balanced)} chars, {len(balanced.split())} words")
 
-        return {
-            'original': prompt,
-            'conservative': conservative,
-            'aggressive': aggressive,
-            'balanced': balanced,
-            'removed_clauses': removed_clauses,
-            'text_after_clause_removal': text_no_clauses,
-            'pos_analysis': pos_analysis,
-            'stopwords_found': stopwords_found,
-            'important_words': important_words
-        }
+        return PromptResponse(
+            original=prompt,
+            conservative=conservative,
+            aggressive=aggressive,
+            balanced=balanced,
+            removed_clauses=removed_clauses,
+            text_after_clause_removal=text_no_clauses,
+            pos_analysis=pos_analysis,
+            stopwords_found=stopwords_found,
+            important_words=important_words
+        )
 
 
-def main():
-    optimizer = PromptOptimizer()
+# def main():
+#     optimizer = PromptOptimizer()
 
-    # Example prompts
-    example_prompts = [
-        "Please write a detailed and comprehensive analysis of the current market trends in the technology sector.",
-        "Can you help me understand the fundamental concepts of machine learning algorithms?",
-        "I would like to know more about the benefits and drawbacks of renewable energy sources.",
-        "Generate a creative story about a young adventurer who discovers a magical forest.",
-        "Explain the process of photosynthesis in plants in simple terms that a child can understand.",
-        "Help me write a Python function to calculate fibonacci numbers",
-        "I would like you to explain machine learning concepts",
-        "Can you please help me understand neural networks?",
-        "Hi, I need you to create a marketing strategy for my business"
-    ]
+#     # Example prompts
+#     example_prompts = [
+#         "Please write a detailed and comprehensive analysis of
+#          the current market trends in the technology sector.",
+#         "Can you help me understand the fundamental
+#   `       concepts of machine learning algorithms?",
+#         "I would like to know more about the benefits and drawbacks of
+#           renewable energy sources.",
+#         "Generate a creative story about a young adventurer who discovers a magical forest.",
+#         "Explain the process of photosynthesis in plants in simple terms that a child can understand.",
+#         "Help me write a Python function to calculate fibonacci numbers",
+#         "I would like you to explain machine learning concepts",
+#         "Can you please help me understand neural networks?",
+#         "Hi, I need you to create a marketing strategy for my business"
+#     ]
 
-    print("=== PROMPT OPTIMIZATION ANALYSIS ===\n")
+#     print("=== PROMPT OPTIMIZATION ANALYSIS ===\n")
 
-    for i, prompt in enumerate(example_prompts, 1):
-        print(f"EXAMPLE {i}:")
-        optimizer.analyze_prompt(prompt)
-        print("\n" + "="*80 + "\n")
+#     for i, prompt in enumerate(example_prompts, 1):
+#         print(f"EXAMPLE {i}:")
+#         optimizer.analyze_prompt(prompt)
+#         print("\n" + "="*80 + "\n")
 
-    # Interactive mode
-    print("Enter your own prompt to optimize (or 'quit' to exit):")
-    while True:
-        user_prompt = input("\nPrompt: ").strip()
-        if user_prompt.lower() in ['quit', 'exit', 'q']:
-            break
-        if user_prompt:
-            print()
-            optimizer.analyze_prompt(user_prompt)
-            print("\n" + "-"*50)
+#     # Interactive mode
+#     print("Enter your own prompt to optimize (or 'quit' to exit):")
+#     while True:
+#         user_prompt = input("\nPrompt: ").strip()
+#         if user_prompt.lower() in ['quit', 'exit', 'q']:
+#             break
+#         if user_prompt:
+#             print()
+#             optimizer.analyze_prompt(user_prompt)
+#             print("\n" + "-"*50)
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
