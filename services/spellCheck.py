@@ -40,4 +40,4 @@ def find_misspelled_words(sentence):
 
 
 # Example usage
-find_misspelled_words("i Love dugs")
+find_misspelled_words("i Luve dugs")
