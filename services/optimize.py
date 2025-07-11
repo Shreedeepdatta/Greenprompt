@@ -5,7 +5,7 @@ from nltk.tag import pos_tag
 from nltk.stem import WordNetLemmatizer
 from collections import defaultdict
 import re
-from dto.optimize_prompt_dto import PromptRequest, PromptResponse
+from dto.optimize_prompt_dto import PromptResponse
 
 # Download required NLTK data (run once)
 
@@ -520,7 +520,7 @@ class PromptOptimizer:
 
         return ' '.join(optimized_tokens)
 
-    def analyze_prompt(self, prompt: PromptRequest):
+    def analyze_prompt(self, prompt: str):
         """Comprehensive analysis of the prompt"""
         print(f"Original prompt: {prompt}")
         print(f"Length: {len(prompt)} characters, {len(prompt.split())} words")
@@ -575,15 +575,15 @@ class PromptOptimizer:
             f"  Length: {len(balanced)} chars, {len(balanced.split())} words")
 
         return PromptResponse(
-            original=prompt,
-            conservative=conservative,
-            aggressive=aggressive,
-            balanced=balanced,
-            removed_clauses=removed_clauses,
-            text_after_clause_removal=text_no_clauses,
-            pos_analysis=pos_analysis,
-            stopwords_found=stopwords_found,
-            important_words=important_words
+            original=str(prompt),
+            conservative=str(conservative),
+            aggressive=str(aggressive),
+            balanced=str(balanced),
+            removed_clauses=str(removed_clauses),
+            text_after_clause_removal=str(text_no_clauses),
+            pos_analysis=str(pos_analysis),
+            stopwords_found=str(stopwords_found),
+            important_words=str(important_words)
         )
 
 
