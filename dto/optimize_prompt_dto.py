@@ -22,6 +22,7 @@ class EnergySavedResponse(PromptResponse):
     energy_saved_aggressive: float
     energy_saved_conservative: float
     original_energy: float
-    balanced_energy: float
-    aggressive_energy: float
-    conservative_energy: float
+    co2emission_original: float
+    co2emission_balanced: float
+    co2emission_aggresive: float
+    co2emission_conservative: float

@@ -32,8 +32,9 @@ def optimize_prompt(prompt: PromptRequest):
         energy_saved_aggressive=energy_saved_aggresive,
         energy_saved_conservative=energy_saved_conservative,
         original_energy=original_prompt_energy.energy_mwh,
-        balanced_energy=balanced_prompt_energy.energy_mwh,
-        aggressive_energy=aggresive_prompt_energy.energy_mwh,
-        conservative_energy=conservative_prompt_energy.energy_mwh
+        co2emission_conservative=conservative_prompt_energy.co2_grams,
+        co2emission_aggresive=aggresive_prompt_energy.co2_grams,
+        co2emission_balanced=balanced_prompt_energy.co2_grams,
+        co2emission_original=original_prompt_energy.co2_grams
     )
     return response_energy
