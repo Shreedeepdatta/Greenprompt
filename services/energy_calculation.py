@@ -1,6 +1,8 @@
 import tiktoken
 import math
-from typing import Optional, Dict, Any
+from typing import Optional
+from dto.energy_dto import (
+    EnergyResponse, PromptAnalysisResponse, ModelComparisonResponse)
 
 
 class TokenEnergyCalculator:
@@ -53,7 +55,7 @@ class TokenEnergyCalculator:
             # Fallback: rough estimate of 4 characters per token
             return math.ceil(len(text) / 4)
 
-    def calculate_energy_cost(self, token_count: int, model: Optional[str] = None) -> Dict[str, Any]:
+    def calculate_energy_cost(self, token_count: int, model: Optional[str] = None) -> EnergyResponse:
         """
         Calculate energy cost for processing the given number of tokens.
 
@@ -62,7 +64,7 @@ class TokenEnergyCalculator:
             model: Model name (optional, uses instance default if not provided)
 
         Returns:
-            dict: Energy cost information including Wh, mWh, and CO2 estimate
+            EnergyResponse: Energy cost information including Wh, mWh, and CO2 estimate
         """
         if model is None:
             model = self.model_name
@@ -78,16 +80,16 @@ class TokenEnergyCalculator:
         # Estimate CO2 emissions (using global average of ~0.5 kg CO2/kWh)
         co2_grams = (energy_wh / 1000) * 500  # Convert to grams of CO2
 
-        return {
-            "tokens": token_count,
-            "model": model,
-            "energy_wh": round(energy_wh, 6),
-            "energy_mwh": round(energy_mwh, 3),
-            "co2_grams": round(co2_grams, 6),
-            "cost_per_1k_tokens_wh": cost_per_1k
-        }
+        return EnergyResponse(
+            tokens=token_count,
+            model=model,
+            energy_wh=round(energy_wh, 6),
+            energy_mwh=round(energy_mwh, 3),
+            co2_grams=round(co2_grams, 6),
+            cost_per_1k_tokens_wh=cost_per_1k
+        )
 
-    def analyze_prompt(self, prompt: str, model: Optional[str] = None) -> Dict[str, Any]:
+    def analyze_prompt(self, prompt: str, model: Optional[str] = None) -> PromptAnalysisResponse:
         """
         Analyze a prompt to get token count and energy cost.
 
@@ -96,19 +98,20 @@ class TokenEnergyCalculator:
             model: Model name (optional)
 
         Returns:
-            dict: Complete analysis including token count and energy metrics
+            PromptAnalysisResponse: Complete analysis including token count and energy metrics
         """
         token_count = self.count_tokens(prompt)
         energy_info = self.calculate_energy_cost(token_count, model)
 
-        return {
-            "prompt_length": len(prompt),
-            "token_count": token_count,
-            "tokens_per_char": round(token_count / len(prompt), 3) if len(prompt) > 0 else 0,
-            "energy_cost": energy_info
-        }
+        return PromptAnalysisResponse(
+            prompt_length=len(prompt),
+            token_count=token_count,
+            tokens_per_char=round(token_count / len(prompt),
+                                  3) if len(prompt) > 0 else 0,
+            energy_cost=energy_info
+        )
 
-    def compare_models(self, prompt: str) -> Dict[str, Any]:
+    def compare_models(self, prompt: str) -> ModelComparisonResponse:
         """
         Compare energy costs across different models for the same prompt.
 
@@ -116,7 +119,7 @@ class TokenEnergyCalculator:
             prompt: The prompt text to analyze
 
         Returns:
-            dict: Comparison of energy costs across models
+            ModelComparisonResponse: Comparison of energy costs across models
         """
         token_count = self.count_tokens(prompt)
         results = {}
@@ -125,54 +128,8 @@ class TokenEnergyCalculator:
             if model != "default":
                 results[model] = self.calculate_energy_cost(token_count, model)
 
-        return {
-            "prompt_length": len(prompt),
-            "token_count": token_count,
-            "model_comparison": results
-        }
-
-
-def main():
-    """
-    Example usage of the TokenEnergyCalculator
-    """
-    # Initialize calculator
-    calculator = TokenEnergyCalculator("gpt-4")
-
-    # Example prompt
-    sample_prompt = """
-    You are a helpful AI assistant. Please analyze the following data and provide insights:
-    
-    Data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    
-    Please calculate the mean, median, and standard deviation of this dataset.
-    Also, create a brief summary of what this data might represent.
-    """
-
-    print("=== Token and Energy Analysis ===")
-    print(f"Prompt: {sample_prompt[:50]}...")
-    print()
-
-    # Analyze the prompt
-    analysis = calculator.analyze_prompt(sample_prompt)
-
-    print(f"Prompt Length: {analysis['prompt_length']} characters")
-    print(f"Token Count: {analysis['token_count']} tokens")
-    print(f"Tokens per Character: {analysis['tokens_per_char']}")
-    print()
-
-    energy = analysis['energy_cost']
-    print(f"Model: {energy['model']}")
-    print(
-        f"Energy Cost: {energy['energy_wh']:.6f} Wh ({energy['energy_mwh']:.3f} mWh)")
-    print(f"Estimated CO2: {energy['co2_grams']:.6f} grams")
-    print(f"Cost per 1000 tokens: {energy['cost_per_1k_tokens_wh']} Wh")
-    print()
-
-    # Compare across models
-    print("=== Model Comparison ===")
-    comparison = calculator.compare_models(sample_prompt)
-
-    for model, data in comparison['model_comparison'].items():
-        print(
-            f"{model}: {data['energy_wh']:.6f} Wh, {data['co2_grams']:.6f}g CO2")
+        return ModelComparisonResponse(
+            prompt_length=len(prompt),
+            token_count=token_count,
+            model_comparison=results
+        )
