@@ -1,14 +1,19 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
+from services.spellCheck import SpellCheckService
+from dto.spell_check_dto import SpellCheckRequest, SpellCheckResponse
 
-from services import spellCheck
+router = APIRouter()
 
-spellcheck = APIRouter(tags=["Spell Check"])
+# Initialize the spell check service
+spell_check_service = SpellCheckService()
 
-
-@spellcheck.post("/spell-check")
-async def spell_check(text: str):
-    result = await spellCheck.find_misspelled_words(text)
-    if result is None:
-        raise HTTPException(
-            status_code=500, detail="Spell check service failed")
-    return {"corrected_text": result}
+@router.post("/spell-check", response_model=SpellCheckResponse)
+async def spell_check(request: SpellCheckRequest):
+    """
+    Check spelling for a single text via request body.
+    """
+    try:
+        result = spell_check_service.check_spelling(request.text)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
