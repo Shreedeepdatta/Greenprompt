@@ -2,10 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers.optimize_router import optimize_router
 from routers.spell_check_router import router
-
+from routers.energy_cal_router import energy_calculator_router
+from routers.ai_prompt_optimize import ai_optimize_router
 app = FastAPI(title="Prompt Optimizer")
 app.include_router(optimize_router)
 app.include_router(router)
+app.include_router(energy_calculator_router)
+app.include_router(ai_optimize_router)
 
 app.add_middleware(
     CORSMiddleware,
