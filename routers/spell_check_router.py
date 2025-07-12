@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Query
 from services.spellCheck import SpellCheckService
 from dto.spell_check_dto import SpellCheckRequest, SpellCheckResponse
 
-router = APIRouter()
+router = APIRouter(tags=["Spelling check"])
 
 # Initialize the spell check service
 spell_check_service = SpellCheckService()
