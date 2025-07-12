@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 class PromptRequest(BaseModel):
     text: str
+    model_name: str
 
 
 class PromptResponse(BaseModel):
@@ -15,3 +16,12 @@ class PromptResponse(BaseModel):
     pos_analysis: str
     stopwords_found: str
     important_words: str
+
+class EnergySavedResponse(PromptResponse):
+    energy_saved_balanced: float
+    energy_saved_aggressive: float
+    energy_saved_conservative: float
+    original_energy: float
+    balanced_energy: float
+    aggressive_energy: float
+    conservative_energy: float
