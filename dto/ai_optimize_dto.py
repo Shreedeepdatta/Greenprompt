@@ -50,3 +50,13 @@ class HealthResponse(BaseModel):
     models_loaded: bool = Field(...,
                                 description="Whether ML models are loaded")
     version: str = Field(..., description="API version")
+
+
+class OptimizedEnergyResponse(OptimizedPromptResponse):
+    """Response model for energy-optimized prompt."""
+    energy_consumed_original: float = Field(..., description="Energy consumed during processing")
+    energy_consumed_summarized: float = Field(..., description="Energy consumed for summarized text")
+    carbon_footprint_original: float = Field(..., description="Estimated carbon footprint")
+    carbon_footprint_summarized: float = Field(..., description="Estimated carbon footprint for summarized text")
+    energy_savings: float = Field(..., description="Energy savings from optimization")
+    carbon_savings: float = Field(..., description="Carbon savings from optimization")

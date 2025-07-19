@@ -1,19 +1,23 @@
 from fastapi import APIRouter, HTTPException, Depends
-from transformers import pipeline
+from transformers import pipeline, AutoTokenizer, AutoModelForSeq2SeqLM
 from keybert import KeyBERT
 from dto.ai_optimize_dto import (
     PromptRequest, KeywordResponse, SummaryResponse,
-    OptimizedPromptResponse)
+    OptimizedPromptResponse, OptimizedEnergyResponse
+)
+from services.energy_calculation import TokenEnergyCalculator
 
 
 class PromptOptimizer:
     def __init__(self):
         try:
             # Summarizer based on DistilBART (fine-tuned DistilBERT for summarization)
+            model = AutoModelForSeq2SeqLM.from_pretrained("sshleifer/distilbart-cnn-12-6")
+            tokenizer = AutoTokenizer.from_pretrained("sshleifer/distilbart-cnn-12-6")
             self.summarizer = pipeline(
                 "summarization",
-                model="sshleifer/distilbart-cnn-12-6",
-                tokenizer="sshleifer/distilbart-cnn-12-6"
+                model=model,
+                tokenizer=tokenizer
             )
             # KeyBERT initialized with DistilBERT sentence embeddings
             self.keyword_extractor = KeyBERT('distilbert-base-nli-mean-tokens')
@@ -86,8 +90,12 @@ class PromptOptimizer:
             original_len = len(request.text)
             summary_len = len(summary_response.summary)
             keyword_len = len(keyword_compressed)
+            energy_calculator = TokenEnergyCalculator()
+            response_original = energy_calculator.analyze_prompt(request.text)
+            response_summarized = energy_calculator.analyze_prompt(
+                summary_response.summary)
 
-            return OptimizedPromptResponse(
+            return OptimizedEnergyResponse(
                 original=request.text,
                 original_length=original_len,
                 summarized=summary_response.summary,
@@ -97,7 +105,13 @@ class PromptOptimizer:
                 compression_ratios={
                     "summary": summary_len / original_len,
                     "keywords": keyword_len / original_len
-                }
+                },
+                energy_consumed_original=response_original.energy_wh,
+                energy_consumed_summarized=response_summarized.energy_wh,
+                carbon_footprint_original=response_original.co2_grams,
+                carbon_footprint_summarized=response_summarized.co2_grams,
+                energy_savings=response_original.energy_wh - response_summarized.energy_wh,
+                carbon_savings=response_original.co2_grams - response_summarized.co2_grams
             )
         except Exception as e:
             raise HTTPException(

@@ -3,6 +3,7 @@ import math
 from typing import Optional
 from dto.energy_dto import PromptEnergyResponse
 
+
 class TokenEnergyCalculator:
     """
     A class to calculate token count and energy cost for processing prompts.
@@ -70,14 +71,15 @@ class TokenEnergyCalculator:
 
         # Count tokens
         token_count = self.count_tokens(prompt)
-        
+
         # Get energy cost per 1000 tokens
-        cost_per_1k = self.energy_costs.get(model, self.energy_costs["default"])
-        
+        cost_per_1k = self.energy_costs.get(
+            model, self.energy_costs["default"])
+
         # Calculate total energy cost in Wh
         energy_wh = (token_count / 1000) * cost_per_1k
         energy_mwh = energy_wh * 1000  # Convert to mWh
-        
+
         # Estimate CO2 emissions (using global average of ~0.5 kg CO2/kWh)
         co2_grams = (energy_wh / 1000) * 500  # Convert to grams of CO2
 

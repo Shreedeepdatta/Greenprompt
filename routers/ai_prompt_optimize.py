@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
-from dto.ai_optimize_dto import HealthResponse, OptimizedPromptResponse, PromptRequest, KeywordResponse, SummaryResponse
+from dto.ai_optimize_dto import (HealthResponse, OptimizedEnergyResponse,
+                                 PromptRequest, KeywordResponse, SummaryResponse)
 from services.aiOptimise import PromptOptimizer
 ai_optimize_router = APIRouter(
     prefix="/ai_prompt-optimizer",
@@ -25,7 +26,7 @@ async def health_check(opt: PromptOptimizer = Depends(get_optimizer)):
     )
 
 
-@ai_optimize_router.post("/optimize", response_model=OptimizedPromptResponse)
+@ai_optimize_router.post("/optimize", response_model=OptimizedEnergyResponse)
 async def optimize_prompt(
     request: PromptRequest,
     opt: PromptOptimizer = Depends(get_optimizer)
